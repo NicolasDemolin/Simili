@@ -10,6 +10,7 @@ from datetime import datetime
 from datetime import date
 from bs4 import BeautifulSoup
 from requests.utils import quote
+from openai import AzureOpenAI
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -261,4 +262,3 @@ def traitement_eurlex(logger):
             except Exception as e:
                 logger.error(f"Problème traitement réponse api: {url_fich_metier}")
                 logger.info(f"url : {url_fich_metier}, erreur : {e}")
-

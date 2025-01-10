@@ -7,18 +7,17 @@ load_dotenv(find_dotenv())
 
 # Le modèle à utiliser pour vos requêtes. Modèle recommandé : "gpt-35-turbo"
 # Ces modèles alternatifs ne sont à utiliser que de façon parcimonieuse.
-os.environ["AZURE_OPENAI_DeploymentId"] = "gpt-4o-mini"
-def call_gpt(html):
-  client = AzureOpenAI(
-    azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"), 
-    api_key=os.getenv("AZURE_OPENAI_KEY"),  
-    api_version="2024-03-01-preview",
+def html_json(html):
+    os.environ["AZURE_OPENAI_DeploymentId"] = "gpt-4o-mini"
+    client = AzureOpenAI(
+        azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"), 
+        api_key=os.getenv("AZURE_OPENAI_KEY"),  
+        api_version="2024-03-01-preview",
 
-  )
-
-  exemple_output = '''
-  {
-        "numero": "2",
+    )
+    exemple_output = '''
+    {
+        "Article": "2",
         "paragraphe": [
         {
             "numero": "1",
@@ -44,15 +43,15 @@ def call_gpt(html):
         ]
     }
     ]
-  }'''
-  response = client.chat.completions.create(
+    }'''
+    response = client.chat.completions.create(
       model=os.getenv("AZURE_OPENAI_DeploymentId"), # model = "deployment_name".
       response_format={ "type": "json_object" },
       messages=[
-          {"role": "system", "content": f'''Tu es un extracteur de texte juridique en json, tu ne dois vraiment renvoyer que le json et seulement l'intérieur comme cette exemple: {exemple_output}
+          {"role": "system", "content": f'''Tu es un extracteur de texte juridique en json, tu ne dois vraiment renvoyer que le json et seulement l'intérieur comme cet exemple: {exemple_output}
           Tu dois inclure l'ensemble des points, sous paragraphes et sous-sous paragraphe si ils existent tu ne dois rien oublier de ce que l'on t'envoie'''},
           {"role": "user", "content": f"Peux tu me ressortir le json avec comme information le numéro de l'article, les numeros de paragraphe les sous paragraphe et le contenu de ce texte : {html}"},
       ],
       temperature = 0
-  )
-  return response.choices[0].message.content
+    )    
+    return response.choices[0].message.content
